@@ -30,7 +30,7 @@ class Main {
             st = new StringTokenizer(br.readLine(), " ");
             M = Integer.parseInt(st.nextToken());
             N = Integer.parseInt(st.nextToken());
-            board = new char[1002][1002];
+            board = new char[N + 1][M + 1];
 
             Queue<Point> fire = new LinkedList<>();
             Queue<Point> person = new LinkedList<>();
