@@ -13,7 +13,7 @@ for _ in range(N - 1):
     numbers = list(map(int, input().split()))
     for i in numbers:
         if i > q[0]:
-            heapq.heappush(q, i)
             heapq.heappop(q)
+            heapq.heappush(q, i)
 
 print(q[0])
