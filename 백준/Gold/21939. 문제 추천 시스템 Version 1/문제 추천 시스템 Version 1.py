@@ -1,39 +1,51 @@
 import heapq
 import sys
 
+
+class Problem:
+    def __init__(self):
+        self.notSolved = {}
+        self.problems_low = []
+        self.problems_high = []
+
+    def add(self, number: int, level: int):
+        self.notSolved[number] = True
+        heapq.heappush(self.problems_low, (level, number))
+        heapq.heappush(self.problems_high, (-level, -number))
+
+    def recommend(self, command: str) -> int:
+        if command == '1':
+            while not self.notSolved[- self.problems_high[0][1]]:
+                heapq.heappop(self.problems_high)
+            return -self.problems_high[0][1]
+        elif command == '-1':
+            while not self.notSolved[self.problems_low[0][1]]:
+                heapq.heappop(self.problems_low)
+            return self.problems_low[0][1]
+
+    def solved(self, number: int):
+        self.notSolved[number] = False
+        while self.problems_low and not self.notSolved[self.problems_low[0][1]]:
+            heapq.heappop(self.problems_low)
+        while self.problems_high and not self.notSolved[-self.problems_high[0][1]]:
+            heapq.heappop(self.problems_high)
+
+
 input = sys.stdin.readline
+problem = Problem()
 N = int(input())
 
-notSolved = {}
-problems_low = []
-problems_high = []
 for _ in range(N):
     problem_number, problem_level = map(int, input().split())
-    notSolved[problem_number] = True
-    heapq.heappush(problems_low, (problem_level, problem_number))
-    heapq.heappush(problems_high, (-problem_level, -problem_number))
+    problem.add(problem_number, problem_level)
 
 M = int(input())
+
 for _ in range(M):
     command = list(input().split())
     if command[0] == 'recommend':
-        if command[1] == '1':
-            while not notSolved[- problems_high[0][1]]:
-                heapq.heappop(problems_high)
-            print(- problems_high[0][1])
-        elif command[1] == '-1':
-            while not notSolved[problems_low[0][1]]:
-                heapq.heappop(problems_low)
-            print(problems_low[0][1])
+        print(problem.recommend(command[1]))
     elif command[0] == 'add':
-        notSolved[int(command[1])] = True
-        heapq.heappush(problems_low, (int(command[2]), int(command[1])))
-        heapq.heappush(problems_high, (-int(command[2]), -int(command[1])))
+        problem.add(int(command[1]), int(command[2]))
     elif command[0] == 'solved':
-        notSolved[int(command[1])] = False
-        while problems_low and not notSolved[problems_low[0][1]]:
-            heapq.heappop(problems_low)
-        while problems_high and not notSolved[-problems_high[0][1]]:
-            heapq.heappop(problems_high)
-
-
+        problem.solved(int(command[1]))
