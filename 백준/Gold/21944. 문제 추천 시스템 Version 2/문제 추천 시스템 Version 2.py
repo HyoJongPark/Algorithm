@@ -85,24 +85,7 @@ class Problem:
         self.notSolved[problem_number] = False
         self.level[problem_number] = 0
         self.classification[problem_number] = 0
-        # for classification in range(1, 101):
-        #     while self.hard_classification[classification] \
-        #             and not self.notSolved[-self.hard_classification[classification][0][1]]:
-        #         heapq.heappop(self.hard_classification[classification])
-        #
-        # for classification in range(1, 101):
-        #     while self.easy_classification[classification] \
-        #             and not self.notSolved[self.easy_classification[classification][0][1]]:
-        #         heapq.heappop(self.easy_classification[classification])
-        #
-        # for l in range(1, 101):
-        #     while self.hard_level[l] and not self.notSolved[-self.hard_level[l][0][0]]:
-        #         heapq.heappop(self.hard_level[l])
-        #
-        # for l in range(1, 101):
-        #     while self.easy_level[l] and not self.notSolved[self.easy_level[l][0][0]]:
-        #         heapq.heappop(self.easy_level[l])
-
+        
 
 input = sys.stdin.readline
 problem = Problem()
