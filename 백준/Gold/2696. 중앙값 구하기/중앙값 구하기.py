@@ -33,15 +33,15 @@ def solution():
 
 
 input = sys.stdin.readline
-T = int(input().rstrip())
+T = int(input())
 
 for _ in range(T):
     N = int(input())
     numbers = []
     if N % 10 == 0:
         for i in range(N // 10):
-            numbers.extend(list(map(int, input().rstrip().split())))
+            numbers.extend(list(map(int, input().split())))
     else:
         for i in range(N // 10 + 1):
-            numbers.extend(list(map(int, input().rstrip().split())))
+            numbers.extend(list(map(int, input().split())))
     solution()
