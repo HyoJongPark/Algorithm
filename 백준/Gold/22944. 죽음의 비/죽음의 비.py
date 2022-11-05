@@ -1,58 +1,53 @@
-from sys import stdin
-from collections import deque
+import collections
+import sys
 
-input = stdin.readline
-dx = [-1,1,0,0]
-dy = [0,0,-1,1]
 
-n,h,d = map(int, input().split())
-board = []
+def is_valid(next_x, next_y):
+    return 0 <= next_x < N and 0 <= next_y < N
 
-sx=sy=-1
-for x in range(n):
-    board.append(list(input().strip()))
-    if sx==-1:
-        for y in range(n):
-            if board[x][y] == 'S':
-                sx,sy = x,y
 
-def solv():
-    visited = [[0]*n for _ in range(n)]
-    q = deque([(sx,sy,h,0,0)])
-    visited[sx][sy] = h
-
+def BFS():
+    q = collections.deque()
+    q.append((start_x, start_y, 0, HP, 0))
+    check[start_x][start_y] = HP
     while q:
-        x,y,now_h,now_d,cnt = q.pop()
+        x, y, distance, current_hp, current_d = q.popleft()
+        for i in range(4):
+            next_x = x + dx[i]
+            next_y = y + dy[i]
 
-        for dir in range(4):
-            nx = x + dx[dir]
-            ny = y + dy[dir]
+            if is_valid(next_x, next_y):
+                next_hp, next_d = current_hp, current_d
+                if board[next_x][next_y] == 'E':
+                    return distance + 1
+                elif board[next_x][next_y] == 'U':
+                    next_d = D
 
-            if point_validator(nx,ny):
-                if board[nx][ny] == 'E':
-                    print(cnt+1)
-                    return
-                nxt_h = now_h
-                nxt_d = now_d
-
-                if board[nx][ny] == 'U':
-                    nxt_d = d
-
-                if nxt_d == 0:
-                    nxt_h -= 1
+                if next_d == 0:
+                    next_hp -= 1
                 else:
-                    nxt_d -= 1
+                    next_d -= 1
 
-                if nxt_h == 0:
+                if next_hp == 0:
                     continue
+                if check[next_x][next_y] < next_hp:
+                    check[next_x][next_y] = next_hp
+                    q.append((next_x, next_y, distance + 1, next_hp, next_d))
 
-                if visited[nx][ny] < nxt_h:
-                    visited[nx][ny] = nxt_h
-                    q.appendleft((nx,ny,nxt_h,nxt_d,cnt+1))
+    return -1
 
-    print(-1)
-def point_validator(x,y):
-    if x < 0 or y < 0 or x >= n or y >= n:
-        return False
-    return True
-solv()
+
+input = sys.stdin.readline
+N, HP, D = map(int, input().split())
+dx = [-1, 1, 0, 0]
+dy = [0, 0, -1, 1]
+board, check = [], [[0 for _ in range(N)] for _ in range(N)]
+start_x, start_y = -1, -1
+for x in range(N):
+    board.append(list(input().strip()))
+    if start_x == -1:
+        for y in range(N):
+            if board[x][y] == 'S':
+                start_x, start_y = x, y
+
+print(BFS())
