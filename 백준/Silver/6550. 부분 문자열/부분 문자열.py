@@ -1,8 +1,7 @@
 import sys
 
 
-def is_substring(S_T):
-    S, T = S_T.split()
+def is_substring(S, T):
     idx = 0
     for i in range(len(T)):
         if T[i] == S[idx]:
@@ -14,8 +13,8 @@ def is_substring(S_T):
 
 input = sys.stdin.readline
 while True:
-    S_T = input().rstrip()
-    if not S_T:
+    try:
+        S, T = input().rstrip().split()
+        print(is_substring(S, T))
+    except:
         break
-
-    print(is_substring(S_T))
