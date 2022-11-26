@@ -7,9 +7,7 @@ balloons = list(map(int, input().split()))
 left, right, answer = 1, max(balloons) * M, 0
 while left <= right:
     mid = (left + right) // 2
-    cnt = 0
-    for balloon in balloons:
-        cnt += mid // balloon
+    cnt = sum(map(lambda balloon: mid // balloon, balloons))
 
     if cnt >= M:
         right = mid - 1
