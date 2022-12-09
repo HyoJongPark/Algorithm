@@ -1,54 +1,54 @@
-from sys import stdin
-from collections import deque
-input = stdin.readline
+import sys
 
-N, M = map(int, input().split())
-graph = []
-for _ in range(N):
-    graph.append(list(map(int, input().split())))
-visited = [[0] * M for _ in range(N)]
 
-dy = [-1, 1, 0, 0]
-dx = [0, 0, -1, 1]
-def bfs(i, j):
+def is_valid(next_x, next_y):
+    return 0 <= next_x < N and 0 <= next_y < M
+
+
+def bfs_check_shape_size(x, y, shape_number):
+    queue = [(x, y)]
+    check_board[x][y] = shape_number
     cnt = 1
-    q = deque()
-    q.append((i, j))
-    visited[i][j] = num
-    while q:
-        y, x = q.popleft()
-        for l in range(4):
-            yy = dy[l] + y
-            xx = dx[l] + x
-            if 0 <= yy < N and 0 <= xx < M:
-                if not visited[yy][xx] and graph[yy][xx] == 1:
-                    visited[yy][xx] = num
-                    q.append((yy, xx))
-                    cnt += 1
+    while queue:
+        point = queue.pop(0)
+        for i in range(4):
+            next_x = point[0] + dx[i]
+            next_y = point[1] + dy[i]
+            if is_valid(next_x, next_y) and not check_board[next_x][next_y] and board[next_x][next_y] == 1:
+                check_board[next_x][next_y] = shape_number
+                queue.append((next_x, next_y))
+                cnt += 1
     return cnt
 
-num = 2
-group = dict()
-for i in range(N):
-    for j in range(M):
-        if graph[i][j] == 1 and not visited[i][j]:
-            cnt = bfs(i, j)
-            group[num] = cnt
-            num += 1
 
-result = 0
-for y in range(N):
-    for x in range(M):
-        if graph[y][x] == 0:
-            s = set()
-            for l in range(4):
-                yy = dy[l] + y
-                xx = dx[l] + x
-                if 0 <= yy < N and 0 <= xx < M:
-                    if graph[yy][xx] == 1 and visited[yy][xx] not in s:
-                        s.add(visited[yy][xx])
-            res = 1
-            for ss in s:
-                res += group[ss]
-            result = max(result, res)
-print(result)
+def make_shape(x, y):
+    s = set()
+    result = 1
+    for i in range(4):
+        next_x = x + dx[i]
+        next_y = y + dy[i]
+        if is_valid(next_x, next_y) and check_board[next_x][next_y] and check_board[next_x][next_y] not in s:
+            s.add(check_board[next_x][next_y])
+            result += shape_size[check_board[next_x][next_y] - 1]
+    return result
+
+
+input = sys.stdin.readline
+N, M = map(int, input().split())
+board = [list(map(int, input().split())) for _ in range(N)]
+check_board = [[0] * M for _ in range(N)]
+dx, dy = [-1, 1, 0, 0], [0, 0, -1, 1]
+
+zero_points, shape_size, tmp = [], [], 1
+for x in range(N):
+    for y in range(M):
+        if board[x][y] == 1 and not check_board[x][y]:
+            shape_size.append(bfs_check_shape_size(x, y, tmp))
+            tmp += 1
+
+answer = 1
+for x in range(N):
+    for y in range(M):
+        if board[x][y] == 0:
+            answer = max(answer, make_shape(x, y))
+print(answer)
