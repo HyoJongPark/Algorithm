@@ -13,17 +13,21 @@ class Main {
         N = Integer.parseInt(br.readLine());
         StringTokenizer st = new StringTokenizer(br.readLine());
 
-        int max = 0;
+        int max = 0, maxIndex = 0;
         for (int i = 0; i < N; i++) {
-            drink.add(Integer.parseInt(st.nextToken()));
-            max = Math.max(drink.get(i), max);
+            int amount = Integer.parseInt(st.nextToken());
+            drink.add(amount);
+            if (max < amount) {
+                max = amount;
+                maxIndex = i;
+            }
         }
 
+        drink.remove(maxIndex);
         double result = max;
-        for (Integer d : drink) {
-            if (d != max) {
-                result += d / 2.0;
-            }
+        for (Integer amount : drink) {
+            result += amount / 2.0;
+
         }
         System.out.println(result);
     }
