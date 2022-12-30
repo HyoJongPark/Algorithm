@@ -50,9 +50,6 @@ public class Main {
 
         @Override
         public int compareTo(Jewel o) {
-            if (this.weight == o.weight) {
-                return o.value - this.value;
-            }
             return this.weight- o.weight;
         }
     }
