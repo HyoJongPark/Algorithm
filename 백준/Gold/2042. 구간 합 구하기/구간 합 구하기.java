@@ -4,7 +4,7 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 class Main {
-    static int N, M, K, PIV = 1;
+    static int N, M, K, PIV = 1 << 20;
     static long[] tree;
 
     public static void main(String[] args) throws IOException {
@@ -13,15 +13,11 @@ class Main {
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
         K = Integer.parseInt(st.nextToken());
-        while (PIV <= N) {
-            PIV = PIV << 1;
-        }
         tree = new long[2 * PIV];
-        tree[PIV] = Long.parseLong(br.readLine());
-        for (int i = 1; i < N; i++) {
+        for (int i = 0; i < N; i++) {
             tree[PIV + i] = Long.parseLong(br.readLine());
         }
-        makeTree(PIV);
+        makeTree();
 
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < M + K; i++) {
@@ -36,7 +32,7 @@ class Main {
         System.out.println(sb);
     }
 
-    private static void makeTree(int PIV) {
+    private static void makeTree() {
         int start = PIV / 2, end = PIV;
         while (start != 0) {
             for (int i = start; i < end; i++) {
