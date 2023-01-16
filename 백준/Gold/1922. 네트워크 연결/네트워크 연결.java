@@ -58,16 +58,6 @@ public class Main {
         return tree[a];
     }
 
-    private static boolean union(Edge edge) {
-
-        if (tree[edge.start] == tree[edge.end]) {
-            return false;
-        }
-
-
-        return true;
-    }
-
     private static class Edge implements Comparable<Edge> {
         int start;
         int end;
