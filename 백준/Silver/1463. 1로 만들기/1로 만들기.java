@@ -1,49 +1,44 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 
-class Main {
-    static int N;
-    static int min = Integer.MAX_VALUE;
+public class Main {
+
+    static int[] check;
+
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        N = Integer.parseInt(br.readLine());
+        int N = Integer.parseInt(br.readLine());
+        check = new int[N + 1];
+        Arrays.fill(check, Integer.MAX_VALUE);
 
-        System.out.println(DFS(0, N));
+        DFS(0, N);
+        System.out.println(check[1]);
     }
 
-    private static int DFS(int level, int current) {
-        if (current == 1) return level;
-        else if (current < 1) return Integer.MAX_VALUE;
-        else if (level > min) return Integer.MAX_VALUE;
-
-        int tmp;
-        if (current % 2 == 0) {
-            tmp =  Math.min(
-                    DFS(level + 1, current / 2),
-                    DFS(level + 1, current - 1)
-            );
-
-            min = Math.min(tmp, min);
+    private static void DFS(int count, int currentVal) {
+        if (currentVal == 1) {
+            check[currentVal] = count;
+            return;
         }
 
-        if (current % 3 == 0) {
-            tmp =  Math.min(
-                    DFS(level + 1, current / 3),
-                    DFS(level + 1, current - 1)
-            );
-
-            min = Math.min(tmp, min);
+        if (isValid(3, currentVal, count + 1)) {
+            check[currentVal / 3] = count + 1;
+            DFS(count + 1, currentVal / 3);
         }
-
-        if (current % 3 != 0 && current % 2 != 0) {
-            min = Math.min(
-                    DFS(level + 1, current - 1),
-                    min
-            );
+        if (isValid(2, currentVal, count + 1)) {
+            check[currentVal / 2] = count + 1;
+            DFS(count + 1, currentVal / 2);
         }
+        if (check[currentVal - 1] > count + 1) {
+            check[currentVal - 1] = count + 1;
+            DFS(count + 1, currentVal - 1);
+        }
+    }
 
-        return min;
+    private static boolean isValid(int n, int val, int count) {
+        return val % n == 0 && check[val / n] > count;
     }
 }
