@@ -1,36 +1,39 @@
 import java.util.*;
 
 class Solution {
+
+    static final int CACHE_HIT_TIME = 1;
+    static final int CACHE_MISS_TIME = 5;
+
+    public static void main(String[] args) {
+        new Solution().solution(2, new String[]{"Jeju", "Pangyo", "NewYork", "newyork"});
+    }
+
     public int solution(int cacheSize, String[] cities) {
-        int answer = 0;
-        if (cacheSize == 0) return cities.length * 5;
-
+        int result = 0;
+        HashSet<String> list = new HashSet<>();
         Queue<String> cache = new LinkedList<>();
-        int index = 0;
-        String lowerCase;
-        while (cache.size() != cacheSize && index != cities.length) {
-            lowerCase = cities[index].toLowerCase();
-            if (cache.contains(lowerCase)) {
-                cache.remove(lowerCase);
-                answer++;
-            } else {
-                answer += 5;
-            }
-            cache.offer(lowerCase);
-            index++;
+
+        if (cacheSize == 0) {
+            return cities.length * CACHE_MISS_TIME;
         }
 
-        for (int i = index; i < cities.length; i++) {
-            lowerCase = cities[i].toLowerCase();
-            if (cache.contains(lowerCase)) {
-                cache.remove(lowerCase);
-                answer++;
+        for (String city : cities) {
+            city = city.toLowerCase();
+            if (!list.contains(city)) {
+                result += CACHE_MISS_TIME;
+                if (cache.size() == cacheSize) {
+                    String removed = cache.poll();
+                    list.remove(removed);
+                }
+                list.add(city);
+                cache.offer(city);
             } else {
-                cache.poll();
-                answer += 5;
+                result += CACHE_HIT_TIME;
+                cache.remove(city);
+                cache.offer(city);
             }
-            cache.offer(lowerCase);
         }
-        return answer;
+        return result;
     }
 }
