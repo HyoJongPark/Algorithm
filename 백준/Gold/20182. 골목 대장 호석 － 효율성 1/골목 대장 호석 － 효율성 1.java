@@ -5,7 +5,6 @@ import java.util.*;
 
 class Main {
     static int N, M, start, end, C, max = Integer.MIN_VALUE;
-    static boolean[] check;
     static List<Node>[] tree;
 
     public static void main(String[] args) throws IOException {
@@ -53,8 +52,8 @@ class Main {
         int[] distance = new int[N + 1];
 
         Arrays.fill(distance, Integer.MAX_VALUE);
-        distance[1] = 0;
-        pq.offer(new Node(1, 0));
+        distance[start] = 0;
+        pq.offer(new Node(start, 0));
 
         while (!pq.isEmpty()) {
             Node current = pq.poll();
