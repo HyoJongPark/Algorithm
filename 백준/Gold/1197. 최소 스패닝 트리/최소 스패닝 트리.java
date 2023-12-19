@@ -2,13 +2,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 class Main {
     static int V, E;
     static int[] parents;
-    static List<Node> nodes;
+    static PriorityQueue<Node> nodes;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -17,7 +17,7 @@ class Main {
         V = Integer.parseInt(st.nextToken());
         E = Integer.parseInt(st.nextToken());
         parents = new int[V + 1];
-        nodes = new ArrayList<>();
+        nodes = new PriorityQueue<>();
 
         for (int i = 1; i <= V; i++) {
             parents[i] = i;
@@ -25,14 +25,15 @@ class Main {
 
         for (int i = 0; i < E; i++) {
             st = new StringTokenizer(br.readLine());
-            nodes.add(new Node(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken())));
+            nodes.offer(new Node(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken())));
         }
-        nodes.sort(Node::compareTo);
 
         int cost = 0, count = 0;
-        for (Node node : nodes) {
-            if (union(node.st, node.en)) {
-                cost += node.cost;
+        while (!nodes.isEmpty()) {
+            Node current = nodes.poll();
+
+            if (union(current.st, current.en)) {
+                cost += current.cost;
                 count++;
 
                 if (count == E - 1) {
@@ -44,8 +45,8 @@ class Main {
     }
 
     private static boolean union(int st, int en) {
-        st = findSet(st);
-        en = findSet(en);
+        st = find(st);
+        en = find(en);
 
         if (st == en) {
             return false;
@@ -54,11 +55,11 @@ class Main {
         return true;
     }
 
-    private static int findSet(int nodeNo) {
+    private static int find(int nodeNo) {
         if (parents[nodeNo] == nodeNo) {
             return nodeNo;
         }
-        parents[nodeNo] = findSet(parents[nodeNo]);
+        parents[nodeNo] = find(parents[nodeNo]);
         return parents[nodeNo];
     }
 
