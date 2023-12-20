@@ -1,77 +1,76 @@
 import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.io.InputStreamReader;
+import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
-public class Main {
+class Main {
     static int N, M;
-    static int[] tree;
-    static List<Edge> edges = new ArrayList<>();
+    static int[] parentNode;
+    static PriorityQueue<Node> pq = new PriorityQueue<>();
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         N = Integer.parseInt(br.readLine());
         M = Integer.parseInt(br.readLine());
-        tree = new int[N + 1];
+        parentNode = new int[N + 1];
+
         for (int i = 1; i <= N; i++) {
-            tree[i] = i;
+            parentNode[i] = i;
         }
 
         for (int i = 0; i < M; i++) {
             StringTokenizer st = new StringTokenizer(br.readLine());
-            edges.add(new Edge(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken())));
+            pq.offer(new Node(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken())));
         }
-        edges.sort(Edge::compareTo);
 
-        int totalDistance = 0, count = 0;
-        for (Edge edge : edges) {
-            if (union(edge.start, edge.end)) {
-                totalDistance += edge.distance;
+        int count = 0, cost = 0;
+        while (!pq.isEmpty()) {
+            Node current = pq.poll();
+
+            if (union(current.st, current.en)) {
+                cost += current.cost;
                 count++;
-            }
 
-            if (count == N - 1) {
-                System.out.println(totalDistance);
-                System.exit(0);
+                if (count == N - 1) {
+                    break;
+                }
             }
         }
+        System.out.println(cost);
     }
 
-    private static boolean union(int a, int b) {
-        a = find(a);
-        b = find(b);
-        if (a == b) {
-            return false;
-        }
+    private static boolean union(int st, int en) {
+        st = find(st);
+        en = find(en);
 
-        tree[a] = b;
+        if (st == en) return false;
+
+        parentNode[st] = en;
         return true;
     }
 
-    private static int find(int a) {
-        if (a != tree[a]) {
-            tree[a] = find(tree[a]);
+    private static int find(int nodeNo) {
+        if (parentNode[nodeNo] == nodeNo) {
+            return nodeNo;
         }
-        return tree[a];
+        parentNode[nodeNo] = find(parentNode[nodeNo]);
+        return parentNode[nodeNo];
     }
 
-    private static class Edge implements Comparable<Edge> {
-        int start;
-        int end;
-        int distance;
+    static class Node implements Comparable<Node> {
+        int st, en;
+        int cost;
 
-        public Edge(int start, int end, int distance) {
-            this.start = start;
-            this.end = end;
-            this.distance = distance;
+        public Node(int st, int en, int cost) {
+            this.st = st;
+            this.en = en;
+            this.cost = cost;
         }
 
         @Override
-        public int compareTo(Edge o) {
-            return this.distance - o.distance;
+        public int compareTo(Node o) {
+            return this.cost - o.cost;
         }
     }
 }
