@@ -7,6 +7,7 @@ import java.util.StringTokenizer;
 
 class Main {
     static int N, M, K, maxLength = Integer.MIN_VALUE;
+    static String[] keys;
     static char[][] board;
     static Map<String, Integer> map = new HashMap<>();
     static final int[][] d = {{-1, -1}, {-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}};
@@ -17,6 +18,7 @@ class Main {
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
         K = Integer.parseInt(st.nextToken());
+        keys = new String[K];
         board = new char[N][M];
         for (int i = 0; i < N; i++) {
             board[i] = br.readLine().toCharArray();
@@ -24,6 +26,7 @@ class Main {
         for (int i = 0; i < K; i++) {
             String input = br.readLine();
             map.put(input, 0);
+            keys[i] = input;
             maxLength = Math.max(maxLength, input.length());
         }
 
@@ -34,13 +37,16 @@ class Main {
         }
 
         StringBuilder sb = new StringBuilder();
-        for (Integer value : map.values()) {
-            sb.append(value).append("\n");
+        for (String key : keys) {
+            sb.append(map.get(key)).append("\n");
         }
         System.out.println(sb);
     }
 
     private static void DFS(int x, int y, String current) {
+        if (map.containsKey(current)) {
+            map.put(current, map.get(current) + 1);
+        }
         if (current.length() >= maxLength) return;
 
         for (int i = 0; i < d.length; i++) {
@@ -52,11 +58,7 @@ class Main {
             if (nextY < 0) nextY = M - 1;
             else if (nextY >= M) nextY = 0;
 
-            String nextString = current + board[nextX][nextY];
-            if (map.containsKey(nextString)) {
-                map.put(nextString, map.get(nextString) + 1);
-            }
-            DFS(nextX, nextY, nextString);
+            DFS(nextX, nextY, current + board[nextX][nextY]);
         }
     }
 }
