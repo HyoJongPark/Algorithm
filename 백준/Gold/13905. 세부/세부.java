@@ -25,27 +25,19 @@ class Main {
         }
         for (int i = 0; i < M; i++) {
             st = new StringTokenizer(br.readLine());
-            int a = Integer.parseInt(st.nextToken());
-            int b = Integer.parseInt(st.nextToken());
-            int cost = Integer.parseInt(st.nextToken());
-            nodes.offer(new Node(a, b, cost));
+            nodes.offer(new Node(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken())));
         }
 
         System.out.println(kruskal());
     }
 
     private static int kruskal() {
-        int count = 0;
         while (!nodes.isEmpty()) {
             Node current = nodes.poll();
 
             if (union(current.st, current.en)) {
                 if (find(start) == find(end)) {
                     return current.cost;
-                }
-
-                if (++count == N - 1) {
-                    return 0;
                 }
             }
         }
