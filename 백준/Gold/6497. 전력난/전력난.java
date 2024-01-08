@@ -38,10 +38,16 @@ class Main {
             }
 
             pq.offer(new Node(0, 0));
+            int count = 0;
             while (!pq.isEmpty()) {
                 Node current = pq.poll();
                 if (check[current.en]) continue;
+                if (count == M - 1) {
+                    sb.append(cost - current.cost).append("\n");
+                    break;
+                }
 
+                count++;
                 cost -= current.cost;
                 check[current.en] = true;
                 for (Node next : nodes[current.en]) {
@@ -50,7 +56,6 @@ class Main {
                     pq.offer(next);
                 }
             }
-            sb.append(cost).append("\n");
             st = new StringTokenizer(br.readLine());
         }
         System.out.println(sb);
