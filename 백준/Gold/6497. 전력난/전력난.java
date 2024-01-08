@@ -1,28 +1,23 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 class Main {
     static int M, N;
-    static boolean[] check;
-    static List<Node>[] nodes;
-    static PriorityQueue<Node> pq;
+    static int[] parents;
+    static PriorityQueue<Node> nodes = new PriorityQueue<>();
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
 
+        StringTokenizer st = new StringTokenizer(br.readLine());
         StringBuilder sb = new StringBuilder();
         while ((M = Integer.parseInt(st.nextToken())) != 0 && (N = Integer.parseInt(st.nextToken())) != 0) {
-            check = new boolean[M];
-            nodes = new List[M];
-            pq = new PriorityQueue<>();
-            for (int i = 0; i < M; i++) {
-                nodes[i] = new ArrayList<>();
+            parents = new int[N + 1];
+            for (int i = 1; i <= M; i++) {
+                parents[i] = i;
             }
 
             int cost = 0;
@@ -32,39 +27,52 @@ class Main {
                 int y = Integer.parseInt(st.nextToken());
                 int z = Integer.parseInt(st.nextToken());
 
-                nodes[x].add(new Node(y, z));
-                nodes[y].add(new Node(x, z));
+                nodes.offer(new Node(x, y, z));
+                nodes.offer(new Node(y, x, z));
                 cost += z;
             }
 
-            pq.offer(new Node(0, 0));
             int count = 0;
-            while (!pq.isEmpty()) {
-                Node current = pq.poll();
-                if (check[current.en]) continue;
-                if (count == M - 1) {
-                    sb.append(cost - current.cost).append("\n");
-                    break;
-                }
+            while (!nodes.isEmpty()) {
+                Node current = nodes.poll();
 
-                count++;
-                cost -= current.cost;
-                check[current.en] = true;
-                for (Node next : nodes[current.en]) {
-                    if (check[next.en]) continue;
+                if (union(current.st, current.en)) {
+                    cost -= current.cost;
 
-                    pq.offer(next);
+                    if (++count == M) break;
                 }
             }
+            sb.append(cost).append("\n");
             st = new StringTokenizer(br.readLine());
         }
         System.out.println(sb);
     }
 
-    static class Node implements Comparable<Node> {
-        int en, cost;
+    private static boolean union(int st, int en) {
+        st = find(st);
+        en = find(en);
 
-        public Node(int en, int cost) {
+        if (st == en) {
+            return false;
+        }
+        parents[st] = en;
+        return true;
+    }
+
+    private static int find(int nodeNo) {
+        if (parents[nodeNo] == nodeNo) {
+            return nodeNo;
+        }
+
+        parents[nodeNo] = find(parents[nodeNo]);
+        return parents[nodeNo];
+    }
+
+    static class Node implements Comparable<Node> {
+        int st, en, cost;
+
+        public Node(int st, int en, int cost) {
+            this.st = st;
             this.en = en;
             this.cost = cost;
         }
