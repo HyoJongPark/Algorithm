@@ -1,7 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashSet;
+import java.util.BitSet;
 import java.util.StringTokenizer;
 
 class Main {
@@ -9,13 +9,13 @@ class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
 
-        HashSet<String> set = new HashSet<>();
+        BitSet set = new BitSet(5_000_001);
         StringBuilder sb = new StringBuilder();
         while (st.hasMoreTokens()) {
-            String next = st.nextToken();
+            int next = Integer.parseInt(st.nextToken());
 
-            if (!set.contains(next)) {
-                set.add(next);
+            if (!set.get(next)) {
+                set.set(next);
                 sb.append(next).append(" ");
             }
         }
