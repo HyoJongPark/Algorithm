@@ -25,7 +25,6 @@ class Solution {
             }
             return "impossible";
         }
-        if (targetCount - level < Math.abs(current[0] - target[0]) + Math.abs(current[1] - target[1])) return "impossible";
 
         for (int i = 0; i < D.length; i++) {
             int nextX = current[0] + D[i][0];
