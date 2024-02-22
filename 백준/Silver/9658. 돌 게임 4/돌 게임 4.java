@@ -23,7 +23,7 @@ class Main {
         dp[2] = 1;
         dp[3] = 2;
         dp[4] = 1;
-        for (int i = 5; i <= 1000; i++) {
+        for (int i = 5; i <= N; i++) {
             if (dp[i - 1] == 2 || dp[i - 3] == 2 || dp[i - 4] == 2) dp[i] = 1;
             else dp[i] = 2;
         }
