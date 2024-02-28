@@ -22,8 +22,9 @@ class Main {
             nodes[i] = new ArrayList<>();
         }
 
+        StringTokenizer st;
         for (int i = 0; i < N - 1; i++) {
-            StringTokenizer st = new StringTokenizer(br.readLine());
+            st = new StringTokenizer(br.readLine());
             int a = Integer.parseInt(st.nextToken());
             int b = Integer.parseInt(st.nextToken());
             nodes[a].add(b);
@@ -34,16 +35,16 @@ class Main {
         System.out.println(Math.min(dp[1][0], dp[1][1]));
     }
 
-    private static void DFS(int nodeNo) {
-        check[nodeNo] = true;
-        dp[nodeNo][0] = 0;
-        dp[nodeNo][1] = 1;
+    private static void DFS(int current) {
+        check[current] = true;
+        dp[current][0] = 0;
+        dp[current][1] = 1;
 
-        for (int next : nodes[nodeNo]) {
+        for (int next : nodes[current]) {
             if (!check[next]) {
                 DFS(next);
-                dp[nodeNo][0] += dp[next][1];
-                dp[nodeNo][1] += Math.min(dp[next][0], dp[next][1]);
+                dp[current][0] += dp[next][1];
+                dp[current][1] += Math.min(dp[next][0], dp[next][1]);
             }
         }
     }
