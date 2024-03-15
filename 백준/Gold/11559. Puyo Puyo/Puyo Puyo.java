@@ -5,13 +5,9 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 class Main {
-
-    static final int N = 12, M = 6;
-    static final int[][] d = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
-
+    static int N = 12, M = 6;
     static char[][] board = new char[N][M];
-    static boolean[][] check;
-
+    static int[][] d = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -19,42 +15,24 @@ class Main {
             board[i] = br.readLine().toCharArray();
         }
 
+        boolean removed;
         int count = 0;
-        boolean status = true;
-        while (status) {
-            status = findAndRemoveEqualColor();
+        do {
+            removed = checkAndRemovePuyo();
 
-            if (status) {
-                moveTile();
+            if (removed) {
+                moveDown();
                 count++;
             }
-        }
+        } while (removed);
         System.out.println(count);
     }
 
-    private static boolean findAndRemoveEqualColor() {
-        boolean status = false;
-
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < M; j++) {
-                if (board[i][j] != '.') {
-                    int count = findEqualColor(i, j, board[i][j]);
-
-                    if (count >= 4) {
-                        removeEqualColor(i, j);
-                        status = true;
-                    }
-                }
-            }
-        }
-        return status;
-    }
-
-    private static void moveTile() {
+    private static void moveDown() {
         for (int j = 0; j < M; j++) {
             int lowestEmptySpace = -1;
 
-            for (int i = 11; i >= 0; i--) {
+            for (int i = N - 1; i >= 0; i--) {
                 if (lowestEmptySpace == -1 && board[i][j] == '.') {
                     lowestEmptySpace = i;
                 } else if (lowestEmptySpace != -1 && board[i][j] != '.') {
@@ -65,34 +43,32 @@ class Main {
         }
     }
 
-    private static int findEqualColor(int x, int y, char color) {
-        Queue<int[]> q = new LinkedList<>();
-        check = new boolean[N][M];
-        int count = 1;
+    private static boolean checkAndRemovePuyo() {
+        boolean removed = false;
+        boolean[][] check = new boolean[N][M];
 
-        q.offer(new int[]{x, y});
-        check[x][y] = true;
-        while (!q.isEmpty()) {
-            int[] current = q.poll();
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < M; j++) {
+                if (board[i][j] != '.') {
+                    Queue<int[]> rememberQueue = checkPuyo(i, j, check);
 
-            for (int i = 0; i < d.length; i++) {
-                int nextX = current[0] + d[i][0];
-                int nextY = current[1] + d[i][1];
-
-                if (isValid(nextX, nextY) && board[nextX][nextY] == color && !check[nextX][nextY]) {
-                    count++;
-                    check[nextX][nextY] = true;
-                    q.offer(new int[]{nextX, nextY});
+                    if (rememberQueue.size() >= 4) {
+                        removePuyo(rememberQueue);
+                        removed = true;
+                    }
                 }
             }
         }
-        return count;
+        return removed;
     }
 
-    private static void removeEqualColor(int x, int y) {
+    private static Queue<int[]> checkPuyo(int startX, int startY, boolean[][] check) {
         Queue<int[]> q = new LinkedList<>();
+        Queue<int[]> rememberQueue = new LinkedList<>();
 
-        q.offer(new int[]{x, y});
+        q.offer(new int[]{startX, startY});
+        rememberQueue.offer(new int[]{startX, startY});
+        check[startX][startY] = true;
         while (!q.isEmpty()) {
             int[] current = q.poll();
 
@@ -100,11 +76,21 @@ class Main {
                 int nextX = current[0] + d[i][0];
                 int nextY = current[1] + d[i][1];
 
-                if (isValid(nextX, nextY) && board[nextX][nextY] != '.' && check[nextX][nextY]) {
-                    board[nextX][nextY] = '.';
+                if (isValid(nextX, nextY) && !check[nextX][nextY] && board[nextX][nextY] == board[startX][startY]) {
                     q.offer(new int[]{nextX, nextY});
+                    rememberQueue.offer(new int[]{nextX, nextY});
+                    check[nextX][nextY] = true;
                 }
             }
+        }
+        return rememberQueue;
+    }
+
+    private static void removePuyo(Queue<int[]> rememberQueue) {
+        while (!rememberQueue.isEmpty()) {
+            int[] current = rememberQueue.poll();
+
+            board[current[0]][current[1]] = '.';
         }
     }
 
