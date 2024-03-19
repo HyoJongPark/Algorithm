@@ -64,7 +64,7 @@ class Main {
             int nextX = current.x + d[(direction + i) % 4][0];
             int nextY = current.y + d[(direction + i) % 4][1];
 
-            while (isValid(nextX, nextY) && (board[nextX][nextY] <= 0 || board[nextX][nextY] != 6)) {
+            while (isValid(nextX, nextY) && (board[nextX][nextY] != 6)) {
                 if (board[nextX][nextY] == 0) numberOfBlindSpot--;
                 else if (board[nextX][nextY] > 0) {
                     nextX += d[(direction + i) % 4][0];
@@ -85,7 +85,7 @@ class Main {
             int nextX = current.x + d[(direction + i) % 4][0];
             int nextY = current.y + d[(direction + i) % 4][1];
 
-            while (isValid(nextX, nextY) && (board[nextX][nextY] < 0 || board[nextX][nextY] != 6)) {
+            while (isValid(nextX, nextY) && (board[nextX][nextY] != 6)) {
                 if (board[nextX][nextY] > 0) {
                     nextX += d[(direction + i) % 4][0];
                     nextY += d[(direction + i) % 4][1];
