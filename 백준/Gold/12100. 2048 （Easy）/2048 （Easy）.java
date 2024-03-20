@@ -38,9 +38,7 @@ class Main {
         int[][] newBoard = new int[N][N];
         for (int direction = 0; direction < d.length; direction++) {
             for (int i = 0; i < N; i++) {
-                for (int j = 0; j < N; j++) {
-                    newBoard[i][j] = board[i][j];
-                }
+                System.arraycopy(board[i], 0, newBoard[i], 0, N);
             }
 
             move(direction, newBoard);
