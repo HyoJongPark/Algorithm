@@ -98,7 +98,7 @@ class Main {
         return 0<= nextX && nextX < N && 0 <= nextY && nextY < N;
     }
 
-    static class Plant implements Comparable<Plant> {
+    static class Plant {
         int x, y;
         int age;
 
@@ -106,11 +106,6 @@ class Main {
             this.x = x;
             this.y = y;
             this.age = age;
-        }
-
-        @Override
-        public int compareTo(Plant o) {
-            return this.age - o.age;
         }
     }
 }
