@@ -26,9 +26,8 @@ class Solution {
             for (; lastIdx < time.length;) {
                 if (count == numberOfPassenger || time[lastIdx] > busTime) break;
                 
-                System.out.printf("%d, %d\n", i, time[lastIdx]);
                 if (i == busCount - 1 && count == numberOfPassenger - 1) {
-                    return String.format("%02d:%02d", (time[lastIdx] - 1) / 60, (time[lastIdx] - 1) % 60);
+                    return timeIntToStringFormat(time[lastIdx] - 1);
                 }
                 count++;
                 lastIdx++;
@@ -36,6 +35,10 @@ class Solution {
         }
         
         int lastBusTime = (9 * 60) + (term * (busCount - 1));
-        return String.format("%02d:%02d", lastBusTime / 60, lastBusTime % 60);
+        return timeIntToStringFormat(lastBusTime);
+    }
+    
+    private String timeIntToStringFormat(int time) {
+        return String.format("%02d:%02d", time / 60, time % 60);
     }
 }
