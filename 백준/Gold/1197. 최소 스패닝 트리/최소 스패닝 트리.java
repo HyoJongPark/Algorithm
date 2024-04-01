@@ -1,42 +1,38 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
+//MST with Kruskal
 class Main {
     static int V, E;
     static int[] parents;
-    static PriorityQueue<Node> nodes;
+    static PriorityQueue<Node> nodes = new PriorityQueue<>();
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-
         V = Integer.parseInt(st.nextToken());
         E = Integer.parseInt(st.nextToken());
         parents = new int[V + 1];
-        nodes = new PriorityQueue<>();
 
         for (int i = 1; i <= V; i++) {
             parents[i] = i;
         }
-
         for (int i = 0; i < E; i++) {
             st = new StringTokenizer(br.readLine());
             nodes.offer(new Node(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken())));
         }
 
         int cost = 0, count = 0;
-        while (!nodes.isEmpty()) {
-            Node current = nodes.poll();
+        while(!nodes.isEmpty()) {
+            Node node = nodes.poll();
+            
+            if (union(node.st, node.en)) {
+                cost += node.cost;
 
-            if (union(current.st, current.en)) {
-                cost += current.cost;
-                count++;
-
-                if (count == E - 1) {
+                if (++count == V - 1) {
                     break;
                 }
             }
@@ -59,8 +55,8 @@ class Main {
         if (parents[nodeNo] == nodeNo) {
             return nodeNo;
         }
-        parents[nodeNo] = find(parents[nodeNo]);
-        return parents[nodeNo];
+
+        return parents[nodeNo] = find(parents[nodeNo]);
     }
 
     static class Node implements Comparable<Node> {
