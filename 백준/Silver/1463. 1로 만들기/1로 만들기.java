@@ -1,49 +1,27 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 
 class Main {
+
     static int N;
-    static int min = Integer.MAX_VALUE;
+    static int[] dp = new int[3_000_001];
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         N = Integer.parseInt(br.readLine());
 
-        System.out.println(DFS(0, N));
-    }
+        Arrays.fill(dp, Integer.MAX_VALUE);
+        dp[1] = 0;
+        dp[2] = 1;
+        dp[3] = 1;
+        for (int i = 2; i <= N; i++) {
+            dp[i] = Math.min(dp[i - 1] + 1, dp[i]);
 
-    private static int DFS(int level, int current) {
-        if (current == 1) return level;
-        else if (current < 1) return Integer.MAX_VALUE;
-        else if (level > min) return Integer.MAX_VALUE;
-
-        int tmp;
-        if (current % 2 == 0) {
-            tmp =  Math.min(
-                    DFS(level + 1, current / 2),
-                    DFS(level + 1, current - 1)
-            );
-
-            min = Math.min(tmp, min);
+            dp[i * 3] = Math.min(dp[i] + 1, dp[i * 3]);
+            dp[i * 2] = Math.min(dp[i] + 1, dp[i * 2]);
         }
-
-        if (current % 3 == 0) {
-            tmp =  Math.min(
-                    DFS(level + 1, current / 3),
-                    DFS(level + 1, current - 1)
-            );
-
-            min = Math.min(tmp, min);
-        }
-
-        if (current % 3 != 0 && current % 2 != 0) {
-            min = Math.min(
-                    DFS(level + 1, current - 1),
-                    min
-            );
-        }
-
-        return min;
+        System.out.println(dp[N]);
     }
 }
