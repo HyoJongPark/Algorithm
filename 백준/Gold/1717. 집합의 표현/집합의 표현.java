@@ -1,36 +1,40 @@
 import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-public class Main {
+class Main {
+
     static int N, M;
-    static int[] tree;
+    static int[] parents;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
-        tree = new int[N + 1];
+        parents = new int[N + 1];
+
         for (int i = 1; i <= N; i++) {
-            tree[i] = i;
+            parents[i] = i;
         }
 
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < M; i++) {
             st = new StringTokenizer(br.readLine());
+            int command = Integer.parseInt(st.nextToken());
+            int a = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
 
-            if (st.nextToken().equals("0")) {
-                union(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
+            if (command == 0) {
+                union(a, b);
             } else {
-                int resultA = find(Integer.parseInt(st.nextToken()));
-                int resultB = find(Integer.parseInt(st.nextToken()));
-                if (resultA == resultB) {
-                    sb.append("YES").append("\n");
+                if (find(a) != find(b)) {
+                    sb.append("NO");
                 } else {
-                    sb.append("NO").append("\n");
+                    sb.append("YES");
                 }
+                sb.append("\n");
             }
         }
         System.out.println(sb);
@@ -40,15 +44,17 @@ public class Main {
         a = find(a);
         b = find(b);
 
-        if (a != b) {
-            tree[a] = b;
+        if (a > b) {
+            parents[b] = a;
+        } else if (b > a) {
+            parents[a] = b;
         }
     }
 
-    private static int find(int a) {
-        if (tree[a] != a) {
-            tree[a] = find(tree[a]);
+    private static int find(int num) {
+        if (parents[num] == num) {
+            return parents[num];
         }
-        return tree[a];
+        return parents[num] = find(parents[num]);
     }
 }
