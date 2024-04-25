@@ -27,9 +27,7 @@ public class Main {
         for (int i = 0; i < M; i++) {
             st = new StringTokenizer(br.readLine());
 
-            if (union(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()))) {
-                count++;
-            }
+            union(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
         }
 
         PriorityQueue<Node> pq = new PriorityQueue<>();
@@ -45,10 +43,6 @@ public class Main {
         double totalCost = 0;
         while (!pq.isEmpty()) {
             Node current = pq.poll();
-
-            if (count == N - 1) {
-                break;
-            }
 
             if (union(current.st, current.en)) {
                 totalCost += current.cost;
