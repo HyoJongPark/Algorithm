@@ -1,35 +1,41 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.PriorityQueue;
+import java.util.StringTokenizer;
 
-public class Main {
+class Main {
+
+    static int N, K;
+    static Jewel[] jewels;
+    static int[] bags;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        int N = Integer.parseInt(st.nextToken());
-        int K = Integer.parseInt(st.nextToken());
+        N = Integer.parseInt(st.nextToken());
+        K = Integer.parseInt(st.nextToken());
+        jewels = new Jewel[N];
+        bags = new int[K];
 
-        List<Jewel> jewels = new ArrayList<>();
-        List<Integer> bags = new ArrayList<>();
         for (int i = 0; i < N; i++) {
             st = new StringTokenizer(br.readLine());
-            jewels.add(new Jewel(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken())));
+            jewels[i] = new Jewel(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
         }
         for (int i = 0; i < K; i++) {
-            bags.add(Integer.parseInt(br.readLine()));
+            bags[i] = Integer.parseInt(br.readLine());
         }
-        jewels.sort(Jewel::compareTo);
-        bags.sort(Integer::compareTo);
+        Arrays.sort(jewels);
+        Arrays.sort(bags);
 
-        long result = 0;
-        int index = 0;
         PriorityQueue<Integer> pq = new PriorityQueue<>(Comparator.reverseOrder());
-        for (int i = 0; i < K; i++) {
-            int currentBagWeight = bags.get(i);
-            while (index < jewels.size() && jewels.get(index).weight <= currentBagWeight) {
-                pq.offer(jewels.get(index++).value);
+        int index = 0;
+        long result = 0;
+        for (int bag : bags) {
+            while (index < N && jewels[index].weight <= bag) {
+                pq.offer(jewels[index++].value);
             }
 
             if (!pq.isEmpty()) {
@@ -39,9 +45,9 @@ public class Main {
         System.out.println(result);
     }
 
-    private static class Jewel implements Comparable<Jewel> {
-        int weight;
-        int value;
+    static class Jewel implements Comparable<Jewel> {
+
+        int weight, value;
 
         public Jewel(int weight, int value) {
             this.weight = weight;
@@ -50,7 +56,7 @@ public class Main {
 
         @Override
         public int compareTo(Jewel o) {
-            return this.weight- o.weight;
+            return this.weight - o.weight;
         }
     }
 }
