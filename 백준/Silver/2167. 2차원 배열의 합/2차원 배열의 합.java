@@ -3,48 +3,42 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-public class Main {
-
+class Main {
     static int N, M, K;
-    static int[][] board;
-    static StringBuilder sb = new StringBuilder();
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
-        board = new int[N][M];
 
-        for (int i = 0; i < N; i++) {
+        int[][] psum = new int[N + 1][M + 1];
+        st = new StringTokenizer(br.readLine());
+        psum[1][1] = Integer.parseInt(st.nextToken());
+        for (int j = 2; j <= M; j++) {
+            psum[1][j] = Integer.parseInt(st.nextToken()) + psum[1][j - 1];
+        }
+
+        for (int i = 2; i <= N; i++) {
             st = new StringTokenizer(br.readLine());
-            for (int j = 0; j < M; j++) {
-                board[i][j] = Integer.parseInt(st.nextToken());
+
+            psum[i][1] = Integer.parseInt(st.nextToken()) + psum[i - 1][1];
+            for (int j = 2; j <= M; j++) {
+                psum[i][j] = Integer.parseInt(st.nextToken()) + psum[i][j - 1] + psum[i - 1][j] - psum[i - 1][j - 1];
             }
         }
 
         K = Integer.parseInt(br.readLine());
-        for (int i = 0; i < K; i++) {
+        StringBuilder sb = new StringBuilder();
+        while (K-- > 0) {
             st = new StringTokenizer(br.readLine());
-            int x1 = Integer.parseInt(st.nextToken()) - 1;
-            int y1 = Integer.parseInt(st.nextToken()) - 1;
-            int x2 = Integer.parseInt(st.nextToken()) - 1;
-            int y2 = Integer.parseInt(st.nextToken()) - 1;
+            int i = Integer.parseInt(st.nextToken());
+            int j = Integer.parseInt(st.nextToken());
+            int x = Integer.parseInt(st.nextToken());
+            int y = Integer.parseInt(st.nextToken());
 
-            calculatePrefixSum(x1, y1, x2, y2);
+            sb.append(psum[x][y] - psum[i - 1][y] - psum[x][j - 1] + psum[i - 1][j - 1]).append("\n");
         }
         System.out.print(sb);
-    }
-
-    private static void calculatePrefixSum(int x1, int y1, int x2, int y2) {
-        int sum = 0;
-
-        for (int i = x1; i <= x2; i++) {
-            for (int j = y1; j <= y2; j++) {
-                sum += board[i][j];
-            }
-        }
-        sb.append(sum).append("\n");
     }
 }
