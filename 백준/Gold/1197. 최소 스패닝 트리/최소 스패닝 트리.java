@@ -4,11 +4,10 @@ import java.io.InputStreamReader;
 import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
-//MST with Kruskal
 class Main {
     static int V, E;
     static int[] parents;
-    static PriorityQueue<Node> nodes = new PriorityQueue<>();
+    static PriorityQueue<int[]> nodes = new PriorityQueue<>((a, b) -> a[2] - b[2]);
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -22,15 +21,16 @@ class Main {
         }
         for (int i = 0; i < E; i++) {
             st = new StringTokenizer(br.readLine());
-            nodes.offer(new Node(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken())));
+
+            nodes.add(new int[]{Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken())});
         }
 
         int cost = 0, count = 0;
-        while(!nodes.isEmpty()) {
-            Node node = nodes.poll();
-            
-            if (union(node.st, node.en)) {
-                cost += node.cost;
+        while (!nodes.isEmpty()) {
+            int[] current = nodes.poll();
+
+            if (union(current[0], current[1])) {
+                cost += current[2];
 
                 if (++count == V - 1) {
                     break;
@@ -51,27 +51,11 @@ class Main {
         return true;
     }
 
-    private static int find(int nodeNo) {
-        if (parents[nodeNo] == nodeNo) {
-            return nodeNo;
+    private static int find(int num) {
+        if (parents[num] == num) {
+            return num;
         }
 
-        return parents[nodeNo] = find(parents[nodeNo]);
-    }
-
-    static class Node implements Comparable<Node> {
-        int st, en;
-        int cost;
-
-        public Node(int st, int en, int cost) {
-            this.st = st;
-            this.en = en;
-            this.cost = cost;
-        }
-
-        @Override
-        public int compareTo(Node o) {
-            return this.cost - o.cost;
-        }
+        return parents[num] = find(parents[num]);
     }
 }
