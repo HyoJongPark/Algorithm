@@ -1,23 +1,23 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 class Main {
     static int N, M;
-    static List<Node>[] nodes;
+    static int[] parents;
+    static PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[2] - b[2]);
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
-        nodes = new List[N + 1];
+        parents = new int[N + 1];
+
         for (int i = 1; i <= N; i++) {
-            nodes[i] = new ArrayList<>();
+            parents[i] = i;
         }
 
         long totalCost = 0;
@@ -25,56 +25,53 @@ class Main {
             st = new StringTokenizer(br.readLine());
             int a = Integer.parseInt(st.nextToken());
             int b = Integer.parseInt(st.nextToken());
-            int distance = Integer.parseInt(st.nextToken());
+            int c = Integer.parseInt(st.nextToken());
 
-            totalCost += distance;
-            nodes[a].add(new Node(b, distance));
-            nodes[b].add(new Node(a, distance));
+            pq.offer(new int[]{a, b, c});
+            totalCost += c;
         }
 
         long result = mst();
-        if (result == -1) {
-            System.out.println(result);
-        } else {
-            System.out.println(totalCost - result);
-        }
+        System.out.println(result == -1 ? -1 : totalCost - result);
     }
 
     private static long mst() {
-        PriorityQueue<Node> pq = new PriorityQueue<>();
-        boolean[] check = new boolean[N + 1];
+        long cost = 0;
+        int count = 0;
 
-        pq.offer(new Node(1, 0));
-        long distance = 0, count = 0;
         while (!pq.isEmpty()) {
-            Node current = pq.poll();
-            if (check[current.nodeNo]) continue;
+            int[] current = pq.poll();
 
-            count++;
-            distance += current.distance;
-            check[current.nodeNo] = true;
-            for (Node next : nodes[current.nodeNo]) {
-                if (check[next.nodeNo]) continue;
+            if (union(current[0], current[1])) {
+                cost += current[2];
 
-                pq.offer(next);
+                if (++count == N - 1) {
+                    return cost;
+                }
             }
         }
-
-        if (count != N) return -1;
-        return distance;
+        return -1;
     }
 
-    static class Node implements Comparable<Node> {
-        int nodeNo, distance;
+    private static boolean union(int st, int en) {
+        st = find(st);
+        en = find(en);
 
-        public Node(int nodeNo, int distance) {
-            this.nodeNo = nodeNo;
-            this.distance = distance;
+        if (st == en) {
+            return false;
+        } else if (st < en) {
+            parents[en] = st;
+        } else {
+            parents[st] = en;
         }
 
-        @Override
-        public int compareTo(Node o) {
-            return this.distance - o.distance;
+        return true;
+    }
+
+    private static int find(int num) {
+        if (parents[num] == num) {
+            return num;
         }
+        return parents[num] = find(parents[num]);
     }
 }
