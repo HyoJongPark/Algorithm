@@ -9,15 +9,12 @@ class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         N = Long.parseLong(br.readLine());
 
-        long result = binarySearch(1, N);
-        System.out.println(result);
-    }
-
-    private static long binarySearch(long left, long right) {
         long result = Long.MIN_VALUE;
+        long left = 1, right = N;
+
         while (left <= right) {
             long mid = (left + right) / 2;
-            long sum = getSum(mid);
+            long sum = (mid * (mid + 1)) / 2;
 
             if (sum > N) {
                 right = mid - 1;
@@ -26,10 +23,6 @@ class Main {
                 left = mid + 1;
             }
         }
-        return result;
-    }
-
-    private static long getSum(long mid) {
-        return (mid * (mid + 1)) / 2;
+        System.out.println(result);
     }
 }
