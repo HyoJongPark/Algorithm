@@ -11,12 +11,16 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         N = Integer.parseInt(br.readLine());
 
-        PriorityQueue<Integer> dq = new PriorityQueue<>(Collections.reverseOrder());
+        PriorityQueue<Integer> pq = new PriorityQueue<>(Collections.reverseOrder());
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < N; i++) {
-            int num = Integer.parseInt(br.readLine());
-            if (num == 0) sb.append(dq.size() == 0 ? 0 : dq.poll()).append('\n');
-            else dq.add(num);
+        while (N-- > 0) {
+            int command = Integer.parseInt(br.readLine());
+
+            if (command == 0) {
+                sb.append(pq.isEmpty() ? 0 : pq.poll()).append('\n');
+            } else {
+                pq.add(command);
+            }
         }
         System.out.println(sb);
     }
