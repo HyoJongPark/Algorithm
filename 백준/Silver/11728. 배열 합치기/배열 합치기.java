@@ -17,16 +17,21 @@ class Main {
         arrA = Arrays.stream(br.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
         arrB = Arrays.stream(br.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
 
-        int pointerA = 0, pointerB = 0;
+        int indexA = 0, indexB = 0;
         StringBuilder sb = new StringBuilder();
-        while (pointerA < N || pointerB < M) {
-            if (pointerA == N || (pointerB != M && arrA[pointerA] > arrB[pointerB])) {
-                sb.append(arrB[pointerB++]);
+        while (indexA < N || indexB < M) {
+            if (indexA == N) {
+
+            }
+
+            if (indexB == M || (indexA != N && arrA[indexA] < arrB[indexB])) {
+                sb.append(arrA[indexA++]);
             } else {
-                sb.append(arrA[pointerA++]);
+                sb.append(arrB[indexB++]);
             }
             sb.append(" ");
         }
-        System.out.println(sb);
+
+        System.out.print(sb);
     }
 }
