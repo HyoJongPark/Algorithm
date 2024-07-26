@@ -1,44 +1,46 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.StringTokenizer;
 
 class Main {
     static int N, X;
-    static int[] history;
+    static int[] arr;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
         N = Integer.parseInt(st.nextToken());
         X = Integer.parseInt(st.nextToken());
-        history = Arrays.stream(br.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
+        arr = new int[N];
 
-        int visitor = 0;
-        for (int i = 0; i < X; i++) {
-            visitor += history[i];
+        int sum = 0;
+        st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < N; i++) {
+            arr[i] = Integer.parseInt(st.nextToken());
+
+            if (i < X) {
+                sum += arr[i];
+            }
         }
 
-        int left = 0, right = X - 1;
-        int currentVisitor = visitor, count = 1;
+        int left = 0, right = X - 1, count = 1;
+        int max = sum;
         while (right < N - 1) {
-            currentVisitor += history[++right] - history[left++];
+            sum += arr[++right] - arr[left++];
 
-            if (currentVisitor == visitor) {
+            if (sum == max) {
                 count++;
-            } else if (currentVisitor > visitor) {
-                visitor = currentVisitor;
+            } else if (sum > max) {
+                max = sum;
                 count = 1;
             }
         }
 
-        if (visitor == 0) {
-            System.out.println("SAD");
+        if (max == 0) {
+            System.out.print("SAD");
         } else {
-            StringBuilder sb = new StringBuilder();
-            sb.append(visitor).append("\n").append(count);
-            System.out.println(sb);
+            System.out.printf("%d\n%d", max, count);
         }
     }
 }
